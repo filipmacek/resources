@@ -91,7 +91,7 @@ function writeToReadme(articles:Article[]) {
     let result = intro
     const tagsObject = createTagObject(articles)
     for (const tag of Object.keys(tagsObject)){
-        result += `\n## ${capitalize(tag)}\n *** \n`
+        result += `\n## ${capitalize(tag)}\n`
         for (const article of tagsObject[tag]){
             result += formatArticle(article)
         }
