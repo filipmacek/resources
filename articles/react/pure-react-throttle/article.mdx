@@ -1,0 +1,66 @@
+---
+title: "Implementing throttle function"
+description: "Creating minimal pure javascript thorottle function"
+tags: ['JAVASCRIPT']
+createdAt: '2022-09-16T08:22:58.913Z'
+author: Filip
+---
+Everytime I needed to use throttling for some function I used [throttle-debounce](https://www.npmjs.com/package/throttle-debounce) package.
+Its battle tested library and always working, so if you need that functionality you can use it.
+But today, let's create our own with the pure typescript to actualy see what is happening under the hood.
+
+
+## Definition
+
+First lets define term **throttling** . To throttle a _function means executing in only once in specific time interval_.
+This means throttling with prevent function from running mulitple times when called by some other process.
+It happens every often in data and UI intensive application that we need that kind of functionalitiy.
+
+
+## Implementation
+
+Most important thing is to understant how `setTimeout` is behaving. It sets a timer which executes a function after specified
+delay. As function executing requests are comming, we are dropping all other and only remembering the last, and this is the function
+that will eventualy executing after time interval passes. Algoritm looks like this:
+
+1. If we didn't run function before, run it now and remember the timestamp
+2. This timestamp will mark the begining of next interval with duration of `limit`
+3. As new requests for function execution come, drop the current one with `clearTimeout`
+and set this function as our current running function.
+4. Wrap our target function with one which check if `limit` time has passed after last execution.
+5. Scheluded execution at the end of this interval
+
+```typescript
+export const throttle = (func:any,limit:number) => {
+  let lastFunc:any;
+  let lastRanTimestamp:number;
+  return function (...args) {
+    if (!lastRanTimestamp){
+      func(args)
+      lastRanTimestamp = Date.now()
+    }else{
+      // Clear the last func
+      if (lastFunc){
+        clearTimeout(lastFunc)
+      }
+      // Set this function as our current running function
+      // but with a timer
+      lastFunc = setTimeout(()=>{
+        if(Date.now() - lastRanTimestamp >= limit){
+          func(args)
+          lastRanTimestamp = Date.now()
+        }
+      },limit - (Date.now()-lastRanTimestamp))
+    }
+  }
+}
+
+
+```
+
+
+## Conclusion
+
+That is all our need for simple throttle function. There will be mulitple cases where you will need this function.
+UI changes like `scroll` event and other are good example of where throttling function helps becase of performance
+benefits.
