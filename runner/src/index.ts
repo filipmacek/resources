@@ -83,15 +83,15 @@ function createTagObject(articles:Article[]){
 
 function formatArticle(article:Article):string {
 
-    return `${DateTime.fromISO(article.createdAt || new Date().toISOString()).toFormat(   "dd LLL','y")}\\\n**${article.title}**\\\n${article.description}\\\n`
+    return `${DateTime.fromISO(article.createdAt || new Date().toISOString()).toFormat(   "dd LLL','y")}\\\n**${article.title}**\\\n${article.description}\n`
 }
 
 function writeToReadme(articles:Article[]) {
     const intro = fs.readFileSync("../intro.md",{encoding: "utf-8"})
-    let result = intro+ "## Articles\n"
+    let result = intro
     const tagsObject = createTagObject(articles)
     for (const tag of Object.keys(tagsObject)){
-        result += `\n#### ${capitalize(tag)}\n`
+        result += `\n## ${capitalize(tag)}\n *** \n`
         for (const article of tagsObject[tag]){
             result += formatArticle(article)
         }

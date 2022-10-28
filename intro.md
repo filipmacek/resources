@@ -1,1 +1,0 @@
-desi st aima
