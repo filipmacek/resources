@@ -58,6 +58,7 @@ const getArticleMetadata = (articlePath:string):Article | null => {
                 tags: metadata.tags && metadata.tags.map((item:any) => item.toUpperCase()),
                 createdAt: metadata.createdAt,
                 description: metadata.description,
+                content,
                 headings: metadata.headings,
                 author: metadata.author,
                 rootPath: articlePath.slice(0,articlePath.lastIndexOf("/")),
