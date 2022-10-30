@@ -8,14 +8,13 @@ author: Filip
 
 Macros are a really powerful tool in your Rust toolkit, and you get many benefits if you know how to use them properly.
 For example, you can generate multiple constant values in struct with macro.
-The good thing about struct constants is they are easy to create and come with all the related struct methods and implemented traits.\
+The good thing about struct constants is they are easy to create and they come with all the related struct methods and implemented traits.\
 I got an idea for this article when I was looking at code of `http` Rust library [here](https://github.com/hyperium/http/blob/master/src/status.rs).
 
 ## Intro
 
 Let's model HTTP status code in Rust. We know that each status code has a corresponding integer number and string title.
-It's easier to remember it by title because it will tell us more than just the raw number.And creating them with constants is easy and intuitive.
-And we would like to create them like this:
+It's easier to remember it by title because it will tell us more than just the raw number. And creating them with constants is easy and intuitive.
 
 ```rust
 let ok = StatusCode::OK
@@ -63,12 +62,12 @@ impl Display for StatusCode{
 }
 ```
 
-This is the normal way of creating const variables inside structs.But there are few concerns that I have about this way compered to macro method
+This is the normal way of creating const variables inside structs. But there are few concerns that I have about this way compared to macro method
 which we will show bellow.
 
 - there are over 63 status code so impl block will be long and filled with const value
-- writing reapeating syntax for every new constant
-- implementations and methods are closely coupled with intances of struct type
+- writing repeating syntax for every new constant
+- implementations and methods are closely coupled with constant instances of struct type
 
 Better and more clear approach would be to move instance creation outside this `impl` block and
 leave only methods for clear and concise view what functionality this type has.
@@ -90,23 +89,23 @@ impl StatusCode{
 ## Macros to rescue
 
 What are macros in general? It a way of writing code that writes other code, which is known as _metaprogramming_.
-Idea behing macro is basically to produce more code with less code, if that makes sense :D .
-There are lot of similaritites between macros and function.However, macros have some additional powers that functions don't and there are some differences.
+Idea behind macro is basically to produce more code with less code, if that makes sense :D .
+There are a lot of similarities between macros and functions. However, macros have some additional powers that functions don't and there are some differences.
 
-- in  function signature you must type all the input params, but macros can take variable number of params
+- in function signature you must type all the input params, but macros can take variable number of params
 - you can define and call functions anywhere, but macros need to be defined or brought into scope before you call them
-- macros definition are generally more difficutl to read, understand, and maintain
+- macros definition are generally more difficult to read, understand, and maintain
 - macros are expanded before the compiler interprets the meaning of the code
 
-We create declerative macros with `marcro_rules!` keyword. Then we  use a set of parentheses to encompass the whole pattern.
-Dolar sign `$` is used as macro variable identifier to be distinguished from a  regular Rust variable.\
-Paterns `$(...)*` and `$(...)+` specifies that the patern matches zero/one or more times `...` expresion.
+We create macros with `marcro_rules!` keyword. Then we use a set of parentheses to encompass the whole pattern.
+Dollar sign `$` is used as macro variable identifier to be distinguished from a  regular Rust variable.\
+Patterns `$(...)*` and `$(...)+` specifies that the pattern matches zero/one or more times `...` expression.
 
 We will use macro for two things. One is to generate const value and other is for creating `all_titles` function where
 we typed all the status codes and its corresponding title.
 
 
-When starting to work on macros, its always a good idea to first visualize how would you call this macro, and then start implementing.
+When starting to work on macros, it's always a good idea to first visualize how would you call this macro, and then start implementing it.
 
 ```rust
 status_codes! {
@@ -116,7 +115,7 @@ status_codes! {
 }
 ```
 
-So the next thing is to figure out how to type expresion `(200,OK,'OK');` inside macro.
+So the next thing is to figure out how to type expression `(200,OK,'OK');` inside macro.
 Macro variables are represented like this `$NAME:TYPE` where `NAME` is the name of variable that we will use in macro block,
 and `TYPE` is fragment specifier which matches Rust syntax to this variable. We will need `expr` and `ident` specifiers. The results is:
 
@@ -124,7 +123,7 @@ and `TYPE` is fragment specifier which matches Rust syntax to this variable. We 
   ($number:expr,$konst:ident,$phrase:expr);
 ```
 
-We then surround it with `$(...)+` to indicate that our macro will accept multiple value that matches our predifned pattern.
+We then surround it with `$(...)+` to indicate that our macro will accept multiple value that matches our predefined pattern.
 Next is to define `impl` block for our `StatusCode` struct where we will put all the status codes as constant value.
 
 ```rust
@@ -133,7 +132,7 @@ impl StatusCode{
 }
 ```
 
-As you see patern `$(...)+` is also used for code multiplication.
+As you see pattern `$(...)+` is also used for code multiplication.
 And at the end we define our function `all_titles` where all `phrases` are typed.
 
 
@@ -169,3 +168,5 @@ macro_rules! status_codes{
     }
 }
 ```
+
+With this macro you just type status code,titles and constant variable names and all constant values are generated.
