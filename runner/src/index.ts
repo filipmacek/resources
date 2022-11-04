@@ -4,6 +4,7 @@ import matter from "gray-matter";
 import {throws} from "assert";
 import * as process from "process";
 import {DateTime} from 'luxon';
+import {writeFileSync} from "fs";
 
 export interface Article {
     title:string
@@ -185,6 +186,8 @@ export const getAllArticles = async () => {
 
 function main(){
     getAllArticles()
+    const now = new Date().toISOString()
+    writeFileSync("../updated",now)
 }
 
 
