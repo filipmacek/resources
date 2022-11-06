@@ -1,27 +1,27 @@
 ---
 title: "Implementing throttle function"
-description: "Creating minimal pure javascript throttle function"
+description: "Creating minimal pure throttle function"
 tags: ['TYPESCRIPT']
 createdAt: '2022-09-16T08:22:58.913Z'
 author: Filip
 ---
 Everytime I needed to use throttling for some function I used [throttle-debounce](https://www.npmjs.com/package/throttle-debounce) package.
 Its battle tested library and always working, so if you need that functionality you can use it.
-But today, let's create our own with the pure typescript to actually see what is happening under the hood.
+But today, let's create our own with the pure Typescript to actually see what is happening under the hood.
 
 
 ## Definition
 
-First lets define term **throttling** . To throttle a _function means executing in only once in specific time interval_.
-This means throttling with prevent function from running multiple times when called by some other process.
-It happens every often in data and UI intensive application that we need that kind of functionality.
+First lets define term **throttling** . To throttle a _function means executing it only once in specific time interval_.
+This means throttling will prevent function from running multiple times when called by some other process.
+You need this functionality very often in data and UI intensive application.
 
 
 ## Implementation
 
 Most important thing is to understand how `setTimeout` is behaving. It sets a timer which executes a function after specified
-delay. As function executing requests are coming, we are dropping all other and only remembering the last, and this is the function
-that will eventually executing after time interval passes. Algorithm looks like this:
+delay. As function executing requests are coming, we are dropping all other requests and only remembering the last. This is the function
+that will eventually be executed after time interval passes. Algorithm looks like this:
 
 1. If we didn't run function before, run it now and remember the timestamp
 2. This timestamp will mark the beginning of next interval with duration of `limit`
@@ -58,9 +58,3 @@ export const throttle = (func:any,limit:number) => {
 
 ```
 
-
-## Conclusion
-
-That is all our need for simple throttle function. There will be multiple cases where you will need this function.
-UI changes like `scroll` event and other are good example of where throttling function helps because of performance
-benefits.
