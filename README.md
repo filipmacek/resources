@@ -2,7 +2,7 @@
 ## TYPESCRIPT
 16 Sep,2022\
 **Implementing throttle function**\
-Creating minimal pure javascript throttle function
+Creating minimal pure throttle function
 
 ## RUST
 13 Oct,2022\
